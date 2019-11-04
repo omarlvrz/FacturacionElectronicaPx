@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wsFacturacionElectronica", "wsFacturacionElectronica\wsFacturacionElectronica.csproj", "{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaEntidades", "FacturacionElectronicaEntidades\FacturacionElectronicaEntidades.csproj", "{296CC2E3-B48D-4E5B-BDCF-78A8BDD671FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaInterfaces", "FacturacionElectronicaInterfaces\FacturacionElectronicaInterfaces.csproj", "{C364D7F5-CA21-4AC4-8636-438FD5D49C6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaBdUtil", "FacturacionElectronicaBdUtil\FacturacionElectronicaBdUtil.csproj", "{AFB9D95B-063F-4479-8EA9-21CF7A9B151C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaAccesoDatos", "FacturacionElectronicaAccesoDatos\FacturacionElectronicaAccesoDatos.csproj", "{70FFEF6D-0414-49B7-9B29-D736D582F814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaLogicaNegocio", "FacturacionElectronicaLogicaNegocio\FacturacionElectronicaLogicaNegocio.csproj", "{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296CC2E3-B48D-4E5B-BDCF-78A8BDD671FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296CC2E3-B48D-4E5B-BDCF-78A8BDD671FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296CC2E3-B48D-4E5B-BDCF-78A8BDD671FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296CC2E3-B48D-4E5B-BDCF-78A8BDD671FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C364D7F5-CA21-4AC4-8636-438FD5D49C6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C364D7F5-CA21-4AC4-8636-438FD5D49C6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C364D7F5-CA21-4AC4-8636-438FD5D49C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C364D7F5-CA21-4AC4-8636-438FD5D49C6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB9D95B-063F-4479-8EA9-21CF7A9B151C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB9D95B-063F-4479-8EA9-21CF7A9B151C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB9D95B-063F-4479-8EA9-21CF7A9B151C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB9D95B-063F-4479-8EA9-21CF7A9B151C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70FFEF6D-0414-49B7-9B29-D736D582F814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70FFEF6D-0414-49B7-9B29-D736D582F814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70FFEF6D-0414-49B7-9B29-D736D582F814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70FFEF6D-0414-49B7-9B29-D736D582F814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12037B7C-2B54-481B-AB4A-61C311C62FE5}
+	EndGlobalSection
+EndGlobal
