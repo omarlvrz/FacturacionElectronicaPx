@@ -178,6 +178,7 @@ namespace wsFacturacionElectronica
                 //15 - Código PDF
                 var sPlantilla = "";
                 var sResolucionSunat = "";
+                //PECSA
                 if (oEmisor.Ruc.Equals("20259033072"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("01"))
@@ -189,6 +190,7 @@ namespace wsFacturacionElectronica
                     }
                     sResolucionSunat = "0180050001319";
                 }
+                //PDP
                 if (oEmisor.Ruc.Equals("20100132754"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("01"))
@@ -200,7 +202,7 @@ namespace wsFacturacionElectronica
                     }
                     sResolucionSunat = "0180050001318";
                 }
-
+                //PES
                 if (oEmisor.Ruc.Equals("20330033313"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("01"))
@@ -212,6 +214,79 @@ namespace wsFacturacionElectronica
                     }
                     sResolucionSunat = "0180050001319";
                 }
+                //PRIMAX
+                if (oEmisor.Ruc.Equals("20554545743"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //COESTI
+                if (oEmisor.Ruc.Equals("20127765279"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //PRIMAXGAS
+                if (oEmisor.Ruc.Equals("20550137489"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //NAVIMAX
+                if (oEmisor.Ruc.Equals("20600314409"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //JOVEME
+                if (oEmisor.Ruc.Equals("20512767011"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //CODESA
+                if (oEmisor.Ruc.Equals("20602544002"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaFA"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaBO"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+
 
                 oDocumentoCarvajal.CAB.CodigoPlantilla.Value = sPlantilla;
 
@@ -505,6 +580,47 @@ namespace wsFacturacionElectronica
                         Descripcion = { Value = oDocumentoSap.CondicionPago }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //FISE
+                if (oDocumentoSap.MontoFise > 0)
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0054" },
+                        Descripcion = { Value = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00") }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Punto de Venta - Código de Destinatario
+                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0054" },
+                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Cliente Tercero
+                if (oDocumentoSap.ReceptorTercero != null)
+                {
+                    if (!String.IsNullOrEmpty(oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad))
+                    {
+                        //Campos OCA
+
+                        if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                        {
+                            oNotaDocumento = new Nota
+                            {
+                                Codigo = { Value = "0059" },
+                                Descripcion = { Value = oDocumentoSap.ReceptorTercero.RazonSocial }
+                            };
+                            oDocumentoCarvajal.AddNota(oNotaDocumento);
+                        }
+                    }
                 }
 
                 //Precintos
@@ -1385,6 +1501,18 @@ namespace wsFacturacionElectronica
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
                 if (oEmisor.Ruc.Equals("20330033313"))
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
+                if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimax"];
+                if (oEmisor.Ruc.Equals("20127765279")) //COESTI
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGas"];
+                if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
+                if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                if (oEmisor.Ruc.Equals("20602544002")) //CODESA
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
 
                 String sTipo = "";
                 switch (oDocumentoSap.IdTipoDoc)
@@ -1403,9 +1531,14 @@ namespace wsFacturacionElectronica
                         break;
                 }
 
-                String sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
-                                          oDocumentoSap.Serie + "_" + oDocumentoSap.NroDocumento.TrimStart('0') +
-                                          ".xml";
+                //String sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
+                //                          oDocumentoSap.Serie + "_" + oDocumentoSap.NroDocumento.TrimStart('0') +
+                //                          ".xml";
+
+                String sArchivoGenerado = oEmisor.Ruc + "-" + sTipo + "-" +
+                          oDocumentoSap.Serie + "-" + oDocumentoSap.NroDocumento.PadLeft(8, '0') +
+                          ".xml";
+
                 String sArchivoDestino = sArchivoGenerado.Replace('-', '_');
                 File.Copy(sRutaFile + "\\" + sArchivoGenerado, sRutaDestino + "\\" + sArchivoDestino, true);
 
@@ -1545,6 +1678,7 @@ namespace wsFacturacionElectronica
                 //15 - Código PDF
                 var sPlantilla = "";
                 var sResolucionSunat = "";
+                //PECSA
                 if (oEmisor.Ruc.Equals("20259033072"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("07"))
@@ -1556,18 +1690,19 @@ namespace wsFacturacionElectronica
                     }
                     sResolucionSunat = "0180050001319";
                 }
+                //PDP
                 if (oEmisor.Ruc.Equals("20100132754"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("07"))
-                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPdpFA"];
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPdpNC"];
                     else
                     {
                         if (oDocumentoSap.IdTipoDoc.Equals("08"))
-                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPdpBO"];
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPdpND"];
                     }
                     sResolucionSunat = "0180050001318";
                 }
-
+                //PES
                 if (oEmisor.Ruc.Equals("20330033313"))
                 {
                     if (oDocumentoSap.IdTipoDoc.Equals("07"))
@@ -1576,6 +1711,78 @@ namespace wsFacturacionElectronica
                     {
                         if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaPesND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //PRIMAX
+                if (oEmisor.Ruc.Equals("20554545743"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //COESTI
+                if (oEmisor.Ruc.Equals("20127765279"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //PRIMAXGAS
+                if (oEmisor.Ruc.Equals("20550137489"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //NAVIMAX
+                if (oEmisor.Ruc.Equals("20600314409"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //JOVEME
+                if (oEmisor.Ruc.Equals("20512767011"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeND"];
+                    }
+                    sResolucionSunat = "0180050001319";
+                }
+                //CODESA
+                if (oEmisor.Ruc.Equals("20602544002"))
+                {
+                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                        sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaNC"];
+                    else
+                    {
+                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                            sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaND"];
                     }
                     sResolucionSunat = "0180050001319";
                 }
@@ -1783,6 +1990,114 @@ namespace wsFacturacionElectronica
                         Descripcion = { Value = ((DateTime)oDocumentoSap.FechaVencimiento).ToShortDateString().Replace('/', '-') }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Campos Primax
+                //Teléfono CSC1
+                if (!String.IsNullOrEmpty(oDocumentoSap.TelefonoCsc1))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0055" },
+                        Descripcion = { Value = oDocumentoSap.TelefonoCsc1 }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Teléfono CSC2
+                if (!String.IsNullOrEmpty(oDocumentoSap.TelefonoCsc2))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0056" },
+                        Descripcion = { Value = oDocumentoSap.TelefonoCsc2 }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Teléfono CSC3
+                if (!String.IsNullOrEmpty(oDocumentoSap.TelefonoCsc3))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0057" },
+                        Descripcion = { Value = oDocumentoSap.TelefonoCsc3 }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Instrucción Entrega
+                if (!String.IsNullOrEmpty(oDocumentoSap.InstruccionEntrega))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0050" },
+                        Descripcion = { Value = oDocumentoSap.InstruccionEntrega }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Código de Pago
+                if (!String.IsNullOrEmpty(oDocumentoSap.CodigoPago))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0051" },
+                        Descripcion = { Value = oDocumentoSap.CodigoPago }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Condición de Pago
+                if (!String.IsNullOrEmpty(oDocumentoSap.CondicionPago))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0058" },
+                        Descripcion = { Value = oDocumentoSap.CondicionPago }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //FISE
+                if (oDocumentoSap.MontoFise > 0)
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0054" },
+                        Descripcion = { Value = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00") }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Punto de Venta - Código de Destinatario
+                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0054" },
+                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Cliente Tercero
+                if (oDocumentoSap.ReceptorTercero != null)
+                {
+                    if (!String.IsNullOrEmpty(oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad))
+                    {
+                        //Campos OCA
+
+                        if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                        {
+                            oNotaDocumento = new Nota
+                            {
+                                Codigo = { Value = "0059" },
+                                Descripcion = { Value = oDocumentoSap.ReceptorTercero.RazonSocial }
+                            };
+                            oDocumentoCarvajal.AddNota(oNotaDocumento);
+                        }
+                    }
                 }
 
 
@@ -2069,11 +2384,23 @@ namespace wsFacturacionElectronica
                 String sRutaDestino = "";
 
                 if (oEmisor.Ruc.Equals("20259033072"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaNa"];
                 if (oEmisor.Ruc.Equals("20100132754"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpNa"];
                 if (oEmisor.Ruc.Equals("20330033313"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPesNa"];
+                if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxNa"];
+                if (oEmisor.Ruc.Equals("20127765279")) //COESTI
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
+                if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasNa"];
+                if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxNa"];
+                if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
+                if (oEmisor.Ruc.Equals("20602544002")) //CODESA
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
 
                 String sTipo = "";
                 switch (oDocumentoSap.IdTipoDoc)
@@ -2132,7 +2459,7 @@ namespace wsFacturacionElectronica
                 var sNumeroResolucion = "";
 
 
-                if (oEmisor.Ruc.Equals("20259033072"))
+                if (oEmisor.Ruc.Equals("20259033072") || oEmisor.Ruc.Equals("20554545743") || oEmisor.Ruc.Equals("20127765279"))
                     sNumeroResolucion = "0180050001319";
                 if (oEmisor.Ruc.Equals("20100132754"))
                     sNumeroResolucion = "0180050001318";
@@ -2153,6 +2480,21 @@ namespace wsFacturacionElectronica
                 //Segmento: ENCABEZADO
                 var oEncabezado = new Encabezado(1, ",")
                 {
+                    //TipoDocumento = { Value = FEPE_Document_Enums.Tipo_Documento.Retencion_20 },
+                    //IdentificacionEmpresaCompradora = { Value = oEmisor.Ruc },
+                    //IdentificacionEmpresaProveedora = { Value = oDocumentoRetencion.Proveedor.NroDocumentoIdentidad },
+                    //TipoAccion = { Value = "0" },
+                    //MotivoReversion = { Value = "" },
+                    //NumeroUnicoComprobante = { Value = oDocumentoRetencion.Serie.Trim() + "-" + oDocumentoRetencion.NumeroRetencion.Trim().TrimStart('0').PadLeft(8, '0') },
+                    //FechaEmisionComprobante = { Value = dFechaComprobante },
+                    //NumeroResolucionSunat = { Value = sNumeroResolucion },
+                    //CodigoPlantilla = { Value = "CP001" },
+                    //CantidadCopias = { Value = "1" },
+                    //CodigoImpresora = { Value = "IMPEC" },
+                    //CorreoElectronico = { Value = "" },
+                    //ImporteTotalEnLetras = { Value = sNumeroLetras },
+                    //FirmaDigital = {Value = "--"},
+                    //CodigoNota = {Value = "0040"}
                     TipoDocumento = { Value = FEPE_Document_Enums.Tipo_Documento.Retencion_20 },
                     IdentificacionEmpresaCompradora = { Value = oEmisor.Ruc },
                     IdentificacionEmpresaProveedora = { Value = oDocumentoRetencion.Proveedor.NroDocumentoIdentidad },
@@ -2162,7 +2504,7 @@ namespace wsFacturacionElectronica
                     NumeroResolucionSunat = { Value = sNumeroResolucion },
                     ImporteTotalEnLetras = { Value = sNumeroLetras },
                     CodigoPlantilla = { Value = "CP001" },
-                    FirmaDigital = {Value = "--"}
+                    FirmaDigital = { Value = "--" }
                 };
                 oRetencion.Encabezado = oEncabezado;
 
@@ -2336,12 +2678,29 @@ namespace wsFacturacionElectronica
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpRet"];
                 if (oEmisor.Ruc.Equals("20330033313"))
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPesRet"];
+                if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxRet"];
+                if (oEmisor.Ruc.Equals("20127765279")) //COESTI
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
+                if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasRet"];
+                if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxRet"];
+                if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
+                if (oEmisor.Ruc.Equals("20602544002")) //CODESA
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
 
                 const String sTipo = "20";
 
-                var sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
-                                          oDocumentoRetencion.Serie + "_" + oDocumentoRetencion.NumeroRetencion.TrimStart('0') +
-                                          ".xml";
+                //var sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
+                //                          oDocumentoRetencion.Serie + "_" + oDocumentoRetencion.NumeroRetencion.TrimStart('0') +
+                //                          ".xml";
+
+                String sArchivoGenerado = oEmisor.Ruc + "-" + sTipo + "-" +
+                    oDocumentoRetencion.Serie + "-" + oDocumentoRetencion.NumeroRetencion.PadLeft(8, '0') + ".xml";
+
+
                 File.Copy(sRutaFile + "\\" + sArchivoGenerado, sRutaDestino + "\\" + sArchivoGenerado, true);
 
                 return oHashtag;
@@ -2372,7 +2731,7 @@ namespace wsFacturacionElectronica
                     if (documentoInfo.IdTipoDoc.Equals("08"))
                         oTipoDocumento = Constantes.CDP_TIPOS.NOTA_DE_DEBITO;
 
-                    oGeneradorCancel.AddCancel(oTipoDocumento, documentoInfo.Serie, Int32.Parse(documentoInfo.NroDocumento), documentoInfo.Observacion);
+                    oGeneradorCancel.AddCancel(oTipoDocumento, documentoInfo.Serie, documentoInfo.NroDocumento, documentoInfo.Observacion);
                 }
 
                 if (oDocumentoPecsa.Count > 0)
@@ -2381,11 +2740,23 @@ namespace wsFacturacionElectronica
                     String sRutaDestino = "";
 
                     if (oEmisor.Ruc.Equals("20259033072"))
-                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaNa"];
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsa"];
                     if (oEmisor.Ruc.Equals("20100132754"))
-                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpNa"];
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
                     if (oEmisor.Ruc.Equals("20330033313"))
-                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPesNa"];
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
+                    if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimax"];
+                    if (oEmisor.Ruc.Equals("20127765279")) //COESTI
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                    if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGas"];
+                    if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
+                    if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                    if (oEmisor.Ruc.Equals("20602544002")) //CODESA
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
 
                     oGeneradorCancel.GenerateXml(sRutaDestino);
                 }
@@ -2401,6 +2772,7 @@ namespace wsFacturacionElectronica
         [WebMethod]
         public String GenerarXmlPercepcion(CompaniaInfo oEmisor, PercepcionInfo oPercepcion)
         {
+            String sInsumo = "";
             try
             {
                 var oPercepcionCarvajal = new FEPE_Perception();
@@ -2630,6 +3002,8 @@ namespace wsFacturacionElectronica
 
                 }
 
+
+                sInsumo = oPercepcionCarvajal.GetText();
                 var oHashtag = oGeneradorHash.GetHashForPerceptionCdp(oPercepcionCarvajal);
 
                 String sRutaFile = WebConfigurationManager.AppSettings["Ruta_Salida_XML_Firmado"];
@@ -2637,20 +3011,32 @@ namespace wsFacturacionElectronica
 
                 if (oEmisor.Ruc.Equals("20259033072"))
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaPer"];
-                if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaPer"];
-                if (oEmisor.Ruc.Equals("20127765279")) //COESTI
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaPer"];
                 if (oEmisor.Ruc.Equals("20100132754"))
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpPer"];
                 if (oEmisor.Ruc.Equals("20330033313"))
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaPesPer"];
+                if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxPer"];
+                if (oEmisor.Ruc.Equals("20127765279")) //COESTI
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
+                if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasPer"];
+                if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxPer"];
+                if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
+                if (oEmisor.Ruc.Equals("20602544002")) //CODESA
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
 
                 const String sTipo = "40";
 
-                var sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
-                                          oPercepcion.SeriePercepcion + "_" + oPercepcion.NumeroPercepcion.TrimStart('0') +
-                                          ".xml";
+                //var sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
+                //                          oPercepcion.SeriePercepcion + "_" + oPercepcion.NumeroPercepcion.TrimStart('0') +
+                //                          ".xml";
+
+                String sArchivoGenerado = oEmisor.Ruc + "-" + sTipo + "-" +
+                    oPercepcion.SeriePercepcion + "-" + oPercepcion.NumeroPercepcion.PadLeft(8, '0') + ".xml";
+
                 File.Copy(sRutaFile + "\\" + sArchivoGenerado, sRutaDestino + "\\" + sArchivoGenerado, true);
 
                 return oHashtag;
@@ -2658,7 +3044,7 @@ namespace wsFacturacionElectronica
             }
             catch (Exception ex)
             {
-                return ex.Message + "-" + ex.StackTrace + "-" + ex.GetBaseException();
+                return sInsumo + "--" + ex.Message + "-" + ex.StackTrace + "-" + ex.GetBaseException();
             }
         }
     }

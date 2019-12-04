@@ -80,6 +80,7 @@ namespace FacturacionElectronicaEntidades
         private String _instruccionEntrega;
         private String _codigoPago;
         private String _condicionPago;
+        private ReceptorTerceroInfo receptorTercero;
 
         public string Serie
         {
@@ -453,5 +454,6 @@ namespace FacturacionElectronicaEntidades
         public string InstruccionEntrega { get => _instruccionEntrega; set => _instruccionEntrega = value; }
         public string CodigoPago { get => _codigoPago; set => _codigoPago = value; }
         public string CondicionPago { get => _condicionPago; set => _condicionPago = value; }
+        public ReceptorTerceroInfo ReceptorTercero { get => receptorTercero; set => receptorTercero = value; }
     }
 }

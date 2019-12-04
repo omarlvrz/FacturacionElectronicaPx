@@ -14,7 +14,7 @@
     <RootNamespace>wsFacturacionElectronica</RootNamespace>
     <AssemblyName>wsFacturacionElectronica</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -43,17 +43,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Carvajal.FEPE.PreSC, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\Librerías Carvajal\UBL 2.1\20191023\Carvajal.FEPE.PreSC.dll</HintPath>
-    </Reference>
-    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\Librerías Carvajal\UBL 2.1\20191023\Gma.QrCodeNet.Encoding.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\Librerías Carvajal\UBL 2.1\20191023\log4net.dll</HintPath>
+    <Reference Include="Carvajal.FEPE.PreSC">
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\Carvajal.FEPE.PreSC.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vsa, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -76,6 +67,12 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="UBL20">
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL20.dll</HintPath>
+    </Reference>
+    <Reference Include="UBL21">
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL21.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -130,7 +127,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2398</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2398/</IISUrl>
+          <IISUrl>http://localhost/wsFacturacionElectronica</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

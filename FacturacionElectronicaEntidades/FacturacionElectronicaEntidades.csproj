@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProveedorInfo.cs" />
     <Compile Include="PuntoVentaInfo.cs" />
+    <Compile Include="ReceptorTerceroInfo.cs" />
     <Compile Include="TipoCambioInfo.cs" />
     <Compile Include="TipoDocumentoInfo.cs" />
     <Compile Include="TipoFacturacionInfo.cs" />
