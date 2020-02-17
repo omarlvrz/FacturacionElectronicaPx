@@ -378,6 +378,12 @@ namespace wsFacturacionElectronica
                 }
 
                 //**********Une la parte entera y la parte decimal*************
+
+                if (String.IsNullOrEmpty(sEntero))
+                {
+                    sLetras += "CERO ";
+                }
+
                 if (!String.IsNullOrEmpty(sDecimal))
                     sLetras += "Y " + sDecimal + "/100 " + sMonedaLetras;
                 else
@@ -387,6 +393,23 @@ namespace wsFacturacionElectronica
 
             return sLetras;
 
+        }
+
+        public static IEnumerable<String> PartirCadena(String sCadena, Int32 nTamano)
+        {
+            if (sCadena == null)
+            {
+                throw new ArgumentNullException(sCadena);
+            }
+            if (nTamano <= 0)
+            {
+                throw new ArgumentException("Tamaño debe ser mayor a cero");
+            }
+
+            for (var i = 0; i < sCadena.Length; i += nTamano)
+            {
+                yield return sCadena.Substring(i, Math.Min(nTamano, sCadena.Length - i));
+            }
         }
     }
 }

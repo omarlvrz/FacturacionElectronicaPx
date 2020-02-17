@@ -43,8 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Carvajal.FEPE.PreSC">
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\Carvajal.FEPE.PreSC.dll</HintPath>
+    <Reference Include="Carvajal.FEPE.PreSC, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\Carvajal.FEPE.PreSC.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vsa, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -67,11 +68,13 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="UBL20">
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL20.dll</HintPath>
+    <Reference Include="UBL20, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL20.dll</HintPath>
     </Reference>
-    <Reference Include="UBL21">
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191204\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL21.dll</HintPath>
+    <Reference Include="UBL21, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL21.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +90,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Util.cs" />
     <Compile Include="wsFacturaElectronica21.asmx.cs">
       <DependentUpon>wsFacturaElectronica21.asmx</DependentUpon>
@@ -95,6 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -111,6 +123,12 @@
       <Project>{dbf4ee4c-e878-487d-8cc5-2d504f7be142}</Project>
       <Name>FacturacionElectronicaLogicaNegocio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

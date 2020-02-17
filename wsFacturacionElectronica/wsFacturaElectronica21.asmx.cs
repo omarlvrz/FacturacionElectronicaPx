@@ -16,6 +16,7 @@ using Carvajal.FEPE.PreSC.Entities.PlanoStandard.Documents;
 using Carvajal.FEPE.PreSC.Entities.PlanoStandard.Segments;
 using FEPE_Factura = Carvajal.FEPE.PreSC.Entities.PlanoStandard.Documents21.FEPE_Factura;
 using FEPE_Nota = Carvajal.FEPE.PreSC.Entities.PlanoStandard.Documents21.FEPE_Nota;
+//using wsFacturacionElectronica.pe.com.carvajal.prd;
 
 namespace wsFacturacionElectronica
 {
@@ -48,6 +49,7 @@ namespace wsFacturacionElectronica
 
         private String GenerarXmlFacturaBoleta21(CompaniaInfo oEmisor, DocumentoSapInfo21 oDocumentoSap)
         {
+            String sError = "";
             try
             {
                 var oDocumentoCarvajal = new FEPE_Factura();
@@ -224,7 +226,7 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "0180050002663";
                 }
                 //COESTI
                 if (oEmisor.Ruc.Equals("20127765279"))
@@ -236,7 +238,7 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "0180050001117";
                 }
                 //PRIMAXGAS
                 if (oEmisor.Ruc.Equals("20550137489"))
@@ -248,7 +250,7 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //NAVIMAX
                 if (oEmisor.Ruc.Equals("20600314409"))
@@ -260,7 +262,7 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //JOVEME
                 if (oEmisor.Ruc.Equals("20512767011"))
@@ -272,7 +274,7 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //CODESA
                 if (oEmisor.Ruc.Equals("20602544002"))
@@ -284,11 +286,14 @@ namespace wsFacturacionElectronica
                         if (oDocumentoSap.IdTipoDoc.Equals("03"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaBO"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "1240050000515";
                 }
 
-
-                oDocumentoCarvajal.CAB.CodigoPlantilla.Value = sPlantilla;
+                if (!String.IsNullOrEmpty(sPlantilla))
+                {
+                    oDocumentoCarvajal.CAB.CodigoPlantilla.Value = sPlantilla;
+                }
+                
 
                 //16 - Es Baja? -- 17 - Motivo Baja
                 if (oDocumentoSap.IdEstado.Equals("2"))
@@ -303,7 +308,19 @@ namespace wsFacturacionElectronica
                 }
 
                 //18 - Orden de Compra
-                oDocumentoCarvajal.CAB.OrdenCompra.Value = oDocumentoSap.OrdenCompra;
+                if (!String.IsNullOrEmpty(oDocumentoSap.OrdenCompra) && !oDocumentoSap.OrdenCompra.Equals("0"))
+                {
+                    if (oDocumentoSap.OrdenCompra.Length > 20)
+                    {
+                        oDocumentoCarvajal.CAB.OrdenCompra.Value = oDocumentoSap.OrdenCompra.Substring(0, 20);
+                    }
+                    else
+                    {
+                        oDocumentoCarvajal.CAB.OrdenCompra.Value = oDocumentoSap.OrdenCompra;
+                    }
+                    
+                }
+                
 
                 //20 - Fecha Vencimiento
                 if (oDocumentoSap.FechaVencimiento != null)
@@ -336,7 +353,9 @@ namespace wsFacturacionElectronica
                 oDocumentoCarvajal.CAB.TotalAnticipos.Value = "0.00";
                 oDocumentoCarvajal.CAB.CantidadCopiasPDFImprimir.Value = "1";
                 oDocumentoCarvajal.CAB.INCOTERM.Value = "";
-                //oDocumentoCarvajal.CAB.CondicionesPago.Value = "";
+
+                
+
                 oDocumentoCarvajal.CAB.CodigoImpresora.Value = "IMPEC";
 
                 #endregion
@@ -359,17 +378,17 @@ namespace wsFacturacionElectronica
                 oDatosEmisor.RazonSocialEmisor.Value = oEmisor.Nombre;
 
                 //5 - Ubigeo
-                oEmisor.Ubigeo = "150140";
-                oDatosEmisor.CodigoUbigeoEmisor.Value = oEmisor.Ubigeo;
+                //oEmisor.Ubigeo = "150140";
+                //oDatosEmisor.CodigoUbigeoEmisor.Value = oEmisor.Ubigeo;
 
                 //6 - Dirección
                 oDatosEmisor.DireccionEmisor.Value = oEmisor.Direccion;
 
                 //8 - Departamento -- 9 - Provincia -- 10 - Distrito
-                oDatosEmisor.UrbanizacionEmisor.Value = "";
-                oDatosEmisor.DepartamentoEmisor.Value = oEmisor.Ubigeo.Substring(0, 2);
-                oDatosEmisor.ProvinciaEmisor.Value = oEmisor.Ubigeo.Substring(2, 2);
-                oDatosEmisor.DistritoEmisor.Value = oEmisor.Ubigeo.Substring(4, 2);
+                //oDatosEmisor.UrbanizacionEmisor.Value = "";
+                //oDatosEmisor.DepartamentoEmisor.Value = oEmisor.Ubigeo.Substring(0, 2);
+                //oDatosEmisor.ProvinciaEmisor.Value = oEmisor.Ubigeo.Substring(2, 2);
+                //oDatosEmisor.DistritoEmisor.Value = oEmisor.Ubigeo.Substring(4, 2);
 
                 //11 - País
                 oDatosEmisor.CodigoPaisEmisor.Value = "PE";
@@ -389,7 +408,15 @@ namespace wsFacturacionElectronica
                 oDatosCliente.RUCReceptor.Value = oDocumentoSap.Cliente.NroDocumentoIdentidad;
 
                 //3 - Tipo de Documento de Identidad
-                oDatosCliente.TipoDocumentoReceptor.Value = oDocumentoSap.Cliente.IdTipoDoc.Equals("01") ? "1" : "6";
+                if (oDocumentoSap.Cliente.IdTipoDoc.Equals("00"))
+                {
+                    oDatosCliente.TipoDocumentoReceptor.Value = "0";
+                }
+                else
+                {
+                    oDatosCliente.TipoDocumentoReceptor.Value = oDocumentoSap.Cliente.IdTipoDoc.TrimStart('0');
+                }
+
 
                 //4 - Nombre Receptor
                 oDatosCliente.NombreReceptor.Value = oDocumentoSap.Cliente.RazonSocial;
@@ -410,8 +437,11 @@ namespace wsFacturacionElectronica
                     oDatosCliente.DistritoReceptor.Value = oDocumentoSap.Cliente.IdDistrito.Substring(0, 30);
                 }
 
-
-                oDatosCliente.CorreoElectronicoReceptor.Value = "";
+                //if (!String.IsNullOrEmpty(oDocumentoSap.Cliente.CorreoElectronico.Trim()))
+                //{
+                    oDatosCliente.CorreoElectronicoReceptor.Value = oDocumentoSap.Cliente.CorreoElectronico;
+                //}
+                
                 oDatosCliente.CodigoPaisReceptor.Value = "PE";
 
                 oDocumentoCarvajal.AddReceptor(oDatosCliente);
@@ -425,25 +455,54 @@ namespace wsFacturacionElectronica
                 var oNotaDocumento = new Nota
                 {
                     Codigo = { Value = "0004" },
-                    Descripcion = { Value = @"0-800-20102 / 411-4696 / sac@pecsa.com.pe" }
+                    Descripcion = { Value = @"Central: 203-3100 / 203-3200" }
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
                 //Dirección Fiscal del Cliente
-                oNotaDocumento = new Nota
+                if (!String.IsNullOrEmpty(oDocumentoSap.Cliente.Direccion.Trim()) && !oDocumentoSap.Cliente.Direccion.Equals("0"))
                 {
-                    Codigo = { Value = "0008" },
-                    Descripcion = { Value = oDocumentoSap.Cliente.Direccion }
-                };
-                oDocumentoCarvajal.AddNota(oNotaDocumento);
+                    var sGlosa = "";
+                    if (oDocumentoSap.Cliente.Direccion.Trim().Length > 100)
+                    {
+                        sGlosa = oDocumentoSap.Cliente.Direccion.Trim().Substring(0, 100);
+                    }
+                    else
+                    {
+                        sGlosa = oDocumentoSap.Cliente.Direccion.Trim();
+                    }
+
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0008" },
+                        Descripcion = { Value = sGlosa }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
 
                 //Dirección de Entrega
-                oNotaDocumento = new Nota
+                if (!String.IsNullOrEmpty(oDocumentoSap.DireccionEntrega) && !oDocumentoSap.DireccionEntrega.Equals("0"))
                 {
-                    Codigo = { Value = "0137" },
-                    Descripcion = { Value = oDocumentoSap.DireccionEntrega }
-                };
-                oDocumentoCarvajal.AddNota(oNotaDocumento);
+
+                    var sGlosa = "";
+                    if (oDocumentoSap.DireccionEntrega.Length > 100)
+                    {
+                        sGlosa = oDocumentoSap.DireccionEntrega.Substring(0, 100);
+                    }
+                    else
+                    {
+                        sGlosa = oDocumentoSap.DireccionEntrega;
+                    }
+
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0137" },
+                        Descripcion = { Value = sGlosa }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
 
                 //Dirección de Emisión (Planta)
                 oNotaDocumento = new Nota
@@ -465,7 +524,7 @@ namespace wsFacturacionElectronica
                 oNotaDocumento = new Nota
                 {
                     Codigo = { Value = "0006" },
-                    Descripcion = { Value = @"www.pecsa.com.pe" }
+                    Descripcion = { Value = @"www.primax.com.pe" }
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
@@ -473,7 +532,7 @@ namespace wsFacturacionElectronica
                 oNotaDocumento = new Nota
                 {
                     Codigo = { Value = "0007" },
-                    Descripcion = { Value = oDocumentoSap.IdCliente }
+                    Descripcion = { Value = oDocumentoSap.IdCliente.TrimStart('0') }
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
@@ -522,7 +581,7 @@ namespace wsFacturacionElectronica
                     oNotaDocumento = new Nota
                     {
                         Codigo = { Value = "0055" },
-                        Descripcion = { Value = oDocumentoSap.TelefonoCsc1 }
+                        Descripcion = { Value = "CSC: " + oDocumentoSap.TelefonoCsc1 }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
@@ -587,19 +646,19 @@ namespace wsFacturacionElectronica
                 {
                     oNotaDocumento = new Nota
                     {
-                        Codigo = { Value = "0054" },
+                        Codigo = { Value = "0053" },
                         Descripcion = { Value = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00") }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
 
                 //Punto de Venta - Código de Destinatario
-                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta) && !oDocumentoSap.IdPuntoVenta.Equals("0"))
                 {
                     oNotaDocumento = new Nota
                     {
-                        Codigo = { Value = "0054" },
-                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta }
+                        Codigo = { Value = "0052" },
+                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta.TrimStart('0') }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
@@ -610,6 +669,43 @@ namespace wsFacturacionElectronica
                     if (!String.IsNullOrEmpty(oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad))
                     {
                         //Campos OCA
+                        var oClienteTercero = new OCA();
+                        String sTipoDocOca = "";
+
+                        if (oDocumentoSap.ReceptorTercero.IdTipoDoc.Equals("00"))
+                        {
+                            sTipoDocOca = "0";
+                        }
+                        else
+                        {
+                            sTipoDocOca = oDocumentoSap.ReceptorTercero.IdTipoDoc.TrimStart('0');
+                        }
+
+                        oClienteTercero.TipoDocumentoUsuario.Value = sTipoDocOca;
+
+                        if (!String.IsNullOrEmpty(oDocumentoSap.ReceptorTercero.IdTipoDoc))
+                        {
+                            oNotaDocumento = new Nota
+                            {
+                                Codigo = { Value = "0061" },
+                                Descripcion = { Value = sTipoDocOca }
+                            };
+                            oDocumentoCarvajal.AddNota(oNotaDocumento);
+                        }
+
+                        oClienteTercero.NumeroDocumentoUsuario.Value = oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad;
+
+                        if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                        {
+                            oNotaDocumento = new Nota
+                            {
+                                Codigo = { Value = "0060" },
+                                Descripcion = { Value = oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad }
+                            };
+                            oDocumentoCarvajal.AddNota(oNotaDocumento);
+                        }
+
+                        oDocumentoCarvajal.AddAdquiriente(oClienteTercero);
 
                         if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
                         {
@@ -624,7 +720,7 @@ namespace wsFacturacionElectronica
                 }
 
                 //Precintos
-
+                /*
                 var sPrecintos = new StringBuilder();
                 var sPrecintos2 = new StringBuilder();
                 var sPrecintos3 = new StringBuilder();
@@ -700,6 +796,7 @@ namespace wsFacturacionElectronica
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
+                */
 
                 //Hora de Emisión
                 oNotaDocumento = new Nota
@@ -710,38 +807,40 @@ namespace wsFacturacionElectronica
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
                 //Observaciones para Dirección adicional CL
-                if (oDocumentoSap.IdTipoFacturacion.Equals("01") && oEmisor.Ruc.Equals("20259033072"))
-                {
-                    if (!String.IsNullOrEmpty(oDocumentoSap.Observacion))
-                    {
-                        oNotaDocumento = new Nota
-                        {
-                            Codigo = { Value = "0114" },
-                            Descripcion = { Value = oDocumentoSap.Observacion.Trim() }
-                        };
-                        oDocumentoCarvajal.AddNota(oNotaDocumento);
-                    }
-                }
+                //if (oDocumentoSap.IdTipoFacturacion.Equals("01") && oEmisor.Ruc.Equals("20554545743"))
+                //{
+                //    if (!String.IsNullOrEmpty(oDocumentoSap.Observacion))
+                //    {
+                //        oNotaDocumento = new Nota
+                //        {
+                //            Codigo = { Value = "0114" },
+                //            Descripcion = { Value = oDocumentoSap.Observacion }
+                //        };
+                //        oDocumentoCarvajal.AddNota(oNotaDocumento);
+                //    }
+                //}
 
                 //Placas en Observaciones para PES
-                if (oDocumentoSap.IdTipoFacturacion.Equals("01") && oEmisor.Ruc.Equals("20330033313"))
-                {
-                    if (!String.IsNullOrEmpty(oDocumentoSap.Observacion))
-                    {
-                        oNotaDocumento = new Nota
-                        {
-                            Codigo = { Value = "0114" },
-                            Descripcion = { Value = oDocumentoSap.Observacion.Trim() }
-                        };
-                        oDocumentoCarvajal.AddNota(oNotaDocumento);
-                    }
-                }
+                //if (oDocumentoSap.IdTipoFacturacion.Equals("01") && oEmisor.Ruc.Equals("20330033313"))
+                //{
+                //    if (!String.IsNullOrEmpty(oDocumentoSap.Observacion))
+                //    {
+                //        oNotaDocumento = new Nota
+                //        {
+                //            Codigo = { Value = "0114" },
+                //            Descripcion = { Value = oDocumentoSap.Observacion.Trim() }
+                //        };
+                //        oDocumentoCarvajal.AddNota(oNotaDocumento);
+                //    }
+                //}
 
                 //Observaciones para Documentos de Servicios con Detracción
                 if ((oDocumentoSap.IdTipoFacturacion.Equals("03") && oDocumentoSap.FlagDetraccionServ.Equals("1") &&
                         oDocumentoSap.Total > oDocumentoSap.MontoDetraccionServ)
                         || (oDocumentoSap.IdTipoFacturacion.Equals("01") && oDocumentoSap.Flete > 400))
                 {
+                    oDocumentoCarvajal.CAB.CondicionesPago.Value = "Detraccion";
+
                     oNotaDocumento = new Nota
                     {
                         Codigo = { Value = "0111" },
@@ -758,26 +857,88 @@ namespace wsFacturacionElectronica
                 }
 
                 //Observaciones en Facturas de Misceláneos y Servicios
-                if (oDocumentoSap.IdTipoFacturacion.Equals("02") || oDocumentoSap.IdTipoFacturacion.Equals("03"))
+                if (oDocumentoSap.IdTipoFacturacion.Equals("01") || oDocumentoSap.IdTipoFacturacion.Equals("02") || oDocumentoSap.IdTipoFacturacion.Equals("03"))
                 {
                     if (!String.IsNullOrEmpty(oDocumentoSap.Observacion))
                     {
-                        oNotaDocumento = new Nota
+                        var sGlosa = "";
+                        if (oDocumentoSap.Observacion.Length > 100)
                         {
-                            Codigo = { Value = "0113" },
-                            Descripcion = { Value = oDocumentoSap.Observacion }
-                        };
-                        oDocumentoCarvajal.AddNota(oNotaDocumento);
+                            var sObservaciones = Util.PartirCadena(oDocumentoSap.Observacion, 100);
+
+                            sGlosa = oDocumentoSap.Observacion.Substring(0, 100);
+
+                            int n = 1;
+                            foreach(var sObs in sObservaciones)
+                            {
+                                if (n <= 8)
+                                {
+                                    var sNota = "";
+                                    switch (n)
+                                    {
+                                        case 1:
+                                            sNota = "0113";
+                                            break;
+                                        case 2:
+                                            sNota = "0114";
+                                            break;
+                                        case 3:
+                                            sNota = "0115";
+                                            break;
+                                        case 4:
+                                            sNota = "0116";
+                                            break;
+                                        case 5:
+                                            sNota = "0117";
+                                            break;
+                                        case 6:
+                                            sNota = "0118";
+                                            break;
+                                        case 7:
+                                            sNota = "0119";
+                                            break;
+                                        case 8:
+                                            sNota = "0120";
+                                            break;
+                                    }
+                                        
+
+                                    oNotaDocumento = new Nota
+                                    {
+                                        Codigo = { Value = sNota },
+                                        Descripcion = { Value = sObs }
+                                    };
+                                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                                    n += 1;
+                                }
+                            }
+                        }
+                        else {
+
+                            if (!String.IsNullOrWhiteSpace(oDocumentoSap.Observacion))
+                            {
+                                sGlosa = oDocumentoSap.Observacion;
+
+                                oNotaDocumento = new Nota
+                                {
+                                    Codigo = { Value = "0113" },
+                                    Descripcion = { Value = sGlosa }
+                                };
+                                oDocumentoCarvajal.AddNota(oNotaDocumento);
+                            }
+                        }
+
+
                     }
                 }
 
                 //Nro. Pedido
-                if (!String.IsNullOrEmpty(oDocumentoSap.NroPedido))
+                if (!String.IsNullOrEmpty(oDocumentoSap.NroPedido.Trim()) && !oDocumentoSap.NroPedido.Equals("0"))
                 {
                     oNotaDocumento = new Nota
                     {
                         Codigo = { Value = "0139" },
-                        Descripcion = { Value = oDocumentoSap.NroPedido }
+                        Descripcion = { Value = oDocumentoSap.NroPedido.TrimStart('0') }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
@@ -789,9 +950,19 @@ namespace wsFacturacionElectronica
                 //TOTAL EN LETRAS
                 if (oDocumentoSap.Total != null)
                 {
+                    double nMontoL = 0.00;
+                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1"))
+                    {
+                        nMontoL = 0.00;
+                    }
+                    else
+                    {
+                        nMontoL = (double)oDocumentoSap.Total;
+                    }
+
                     var oLeyenda = new Leyenda();
                     oLeyenda.Codigo.Value = "1000";
-                    oLeyenda.Descripcion.Value = Util.NumeroALetras((double)oDocumentoSap.Total,
+                    oLeyenda.Descripcion.Value = Util.NumeroALetras(nMontoL,
                                                                     oDocumentoSap.IdMoneda);
 
                     oDocumentoCarvajal.AddLeyenda(oLeyenda);
@@ -837,7 +1008,7 @@ namespace wsFacturacionElectronica
 
 
                 //Guía de Remisión
-                if (!String.IsNullOrEmpty(oDocumentoSap.SerieGuiaRemision) && !String.IsNullOrEmpty(oDocumentoSap.NroGuiaRemision))
+                if (!String.IsNullOrEmpty(oDocumentoSap.SerieGuiaRemision.Trim()) && !String.IsNullOrEmpty(oDocumentoSap.NroGuiaRemision.Trim()))
                 {
                     if (!oDocumentoSap.SerieGuiaRemision.Trim().Equals("0") && !oDocumentoSap.NroGuiaRemision.Trim().Equals("0"))
                     {
@@ -876,7 +1047,7 @@ namespace wsFacturacionElectronica
                 #region REF-Documentos Referencia
 
                 //SCOP
-                if (!String.IsNullOrEmpty(oDocumentoSap.Scop) && oDocumentoSap.Scop.Length >= 11)
+                if (!String.IsNullOrEmpty(oDocumentoSap.Scop.Trim()) && oDocumentoSap.Scop.Length >= 11)
                 {
                     var oReferencia = new REF();
                     oReferencia.NumeroDocumento.Value = oDocumentoSap.Scop;
@@ -897,7 +1068,9 @@ namespace wsFacturacionElectronica
                 oImpuesto.ImporteTotal.Value = sMonto;
                 oImpuesto.ImporteExplicito.Value = sMonto;
 
-                oImpuesto.TotalVenta.Value = oDocumentoSap.MotivoVenta.Gratuito.Equals("0") ? oDocumentoCarvajal.CAB.TotalValorVenta.Value : ((double)oDocumentoSap.MontoGratuito).ToString("###0.00");
+                oImpuesto.TotalVenta.Value = oDocumentoSap.MotivoVenta.Gratuito.Equals("0") ? 
+                    oDocumentoCarvajal.CAB.TotalValorVenta.Value 
+                    : ((double)(oDocumentoSap.MontoGratuito - oDocumentoSap.Igv)).ToString("###0.00");
 
                 if (oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
                 {
@@ -907,9 +1080,9 @@ namespace wsFacturacionElectronica
 
                     if (oDocumentoSap.Igv == 0)
                     {
-                        oImpuesto.CatalogoSunat.Value = "9997";
-                        oImpuesto.NombreTributo.Value = "EXO";
-                        oImpuesto.CodigoTipoTributo.Value = "VAT";
+                        oImpuesto.CatalogoSunat.Value = "9998";
+                        oImpuesto.NombreTributo.Value = "INA";
+                        oImpuesto.CodigoTipoTributo.Value = "FRE";
                     }
 
                 }
@@ -1053,7 +1226,7 @@ namespace wsFacturacionElectronica
                 #region ITE - Detalles
 
                 var nItem = 0;
-                var bAgregoDtr = false;
+                //var bAgregoDtr = false;
 
                 foreach (var documentoDetInfo in oDocumentoSap.Detalle)
                 {
@@ -1068,44 +1241,64 @@ namespace wsFacturacionElectronica
                     oItem.ITE.UnidadMedida.Value = documentoDetInfo.Articulo.UnidadMedida;
 
                     //3 - Cantidad
-                    sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.00");
+                    sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.000");
                     oItem.ITE.CantidadUnidad.Value = sMonto;
 
                     //4 - Valor Venta
-                    sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? ((double)(documentoDetInfo.MontoGratuito)).ToString("###0.00") : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
+                    //sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? ((double)(documentoDetInfo.MontoGratuito)).ToString("###0.00") : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
+                    sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "0.00" : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
                     oItem.ITE.ValorVenta.Value = sMonto;
 
                     //5 - Descripción del Producto
-                    oItem.ITE.DescripcionVenta.Value = documentoDetInfo.Articulo.Descripcion.Replace(",", "");
+
+                    var sDescripcion = "";
+                    if (documentoDetInfo.Articulo.Descripcion.Length > 200)
+                    {
+                        sDescripcion = documentoDetInfo.Articulo.Descripcion.Substring(0, 200).Replace(",", "");
+                    }
+                    else
+                    {
+                        sDescripcion = documentoDetInfo.Articulo.Descripcion.Replace(",", "");
+                    }
+
+                    oItem.ITE.DescripcionVenta.Value = sDescripcion;
 
                     if (documentoDetInfo.Api > 0 && documentoDetInfo.Temperatura > 0 && oDocumentoSap.IdTipoFacturacion.Equals("01"))
                     {
+                        sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "0.00" : ((double)documentoDetInfo.Total).ToString("###0.00");
                         oItem.ITE.DescripcionVenta.Value += "~" + ((double)documentoDetInfo.Api).ToString("###0.00") + "~" +
-                                                        ((double)documentoDetInfo.Temperatura).ToString("###0.00") + "~" + ((double)documentoDetInfo.Total).ToString("###0.00");
+                                                        ((double)documentoDetInfo.Temperatura).ToString("###0.00") + "~" + sMonto;
                     }
                     else
                     {
-                        oItem.ITE.DescripcionVenta.Value += "~~~" +
-                                                        ((double)documentoDetInfo.Total).ToString("###0.00");
+                        sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "0.00" : ((double)documentoDetInfo.Total).ToString("###0.00");
+                        oItem.ITE.DescripcionVenta.Value += "~~~" + sMonto;
                     }
 
-                    //6 - Valor Unitario (Precio sin impuestos)
+                    //12 - Valor Unitario (Precio sin impuestos)
 
                     if (oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
                     {
-                        sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.00");
+                        sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
                     }
                     else
                     {
-                        if (documentoDetInfo.Igv == 0)
-                        {
-                            sMonto = ((double)documentoDetInfo.PrecioUnitarioIgv).ToString("###0.0000");
-                        }
-                        else
-                        {
-                            sMonto = "0.00";
-                        }
-
+                        //if (documentoDetInfo.Igv == 0)
+                        //{
+                        //    //sMonto = ((double)documentoDetInfo.PrecioUnitarioIgv).ToString("###0.0000");
+                        //    sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
+                        //    //temporal
+                        //    if (oDocumentoSap.Igv > 0)
+                        //    {
+                        //        sMonto = "0.00";
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sMonto = "0.00";
+                        //    //sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
+                        //}
+                        sMonto = "0.00";
                     }
 
                     oItem.ITE.ValorUnitario.Value = sMonto;
@@ -1128,14 +1321,15 @@ namespace wsFacturacionElectronica
                     //11 - Código de Precio
                     oItem.ITE.CodigoPrecio.Value = !oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "01" : "02";
 
-                    //12 - Valor Precio (Precio con impuestos)
+                    //6 - Valor Precio (Precio con impuestos)
                     if (oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
                     {
                         sMonto = ((double)documentoDetInfo.PrecioUnitarioIgv).ToString("###0.0000");
                     }
                     else
                     {
-                        sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.00");
+                        sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
+                        //sMonto = "0.0000";
                     }
 
                     oItem.ITE.Precio.Value = sMonto;
@@ -1233,7 +1427,7 @@ namespace wsFacturacionElectronica
                     else
                     {
                         //5 - Tipo de Afectación IGV
-                        oItemImpuesto.TipoAfectacionIGV.Value = documentoDetInfo.Igv == 0 ? "20" : "10";
+                        oItemImpuesto.TipoAfectacionIGV.Value = documentoDetInfo.Igv == 0 ? "30" : "10";
                         sMonto = ((double)documentoDetInfo.Igv).ToString("###0.00");
                     }
 
@@ -1246,7 +1440,7 @@ namespace wsFacturacionElectronica
                     oItemImpuesto.BaseImponible.Value = sMonto;
 
                     //4 - Porcentaje que se aplica a la base imponible
-                    oItemImpuesto.PorcentajeAplicadoBaseImponible.Value = "18";
+                    oItemImpuesto.PorcentajeAplicadoBaseImponible.Value = documentoDetInfo.Igv == 0 ? "0" : "18";
 
                     //7 - Categoría de Tributo
                     oItemImpuesto.CategoriaTributoSUNAT.Value = "1000";
@@ -1268,13 +1462,13 @@ namespace wsFacturacionElectronica
                     }
                     else
                     {
-                        //Exonerado
+                        //Inafecto
                         //5 - Tipo de Afectación IGV
                         if (documentoDetInfo.Igv == 0)
                         {
-                            oItemImpuesto.CategoriaTributoSUNAT.Value = "9997";
-                            oItemImpuesto.NombreTributo.Value = "EXO";
-                            oItemImpuesto.CodigoTipoTributo.Value = "VAT";
+                            oItemImpuesto.CategoriaTributoSUNAT.Value = "9998";
+                            oItemImpuesto.NombreTributo.Value = "INA";
+                            oItemImpuesto.CodigoTipoTributo.Value = "FRE";
                         }
                     }
 
@@ -1332,7 +1526,7 @@ namespace wsFacturacionElectronica
 
                     #region TRA - Placa de Atención de Venta de Combustibles
 
-                    if (oEmisor.Ruc.Equals("20330033313"))
+                    if (oEmisor.Ruc.Equals("20330033313") || oEmisor.Ruc.Equals("20127765279") || oEmisor.Ruc.Equals("20512767011") || oEmisor.Ruc.Equals("20602544002"))
                     {
                         if (!String.IsNullOrEmpty(documentoDetInfo.PlacaAtencion) && !documentoDetInfo.PlacaAtencion.Equals("0"))
                         {
@@ -1351,20 +1545,20 @@ namespace wsFacturacionElectronica
 
                     oDocumentoCarvajal.AddItem(oItem);
 
-                    if ((oDocumentoSap.IdTipoFacturacion.Equals("03") &&
-                         oDocumentoSap.FlagDetraccionServ.Equals("1") &&
-                         oDocumentoSap.Total > oDocumentoSap.MontoDetraccionServ)
-                        || (oDocumentoSap.IdTipoFacturacion.Equals("01") && oDocumentoSap.Flete > 400))
-                    {
-                        if (bAgregoDtr == false)
-                        {
-                            var oDetraccion = new TRA();
-                            oDetraccion.FormaPago.Value = "001";
-                            oItem.AddTRA(oDetraccion);
-                            bAgregoDtr = true;
-                        }
+                    //if ((oDocumentoSap.IdTipoFacturacion.Equals("03") &&
+                    //     oDocumentoSap.FlagDetraccionServ.Equals("1") &&
+                    //     oDocumentoSap.Total > oDocumentoSap.MontoDetraccionServ)
+                    //    || (oDocumentoSap.IdTipoFacturacion.Equals("01") && oDocumentoSap.Flete > 400))
+                    //{
+                    //    if (bAgregoDtr == false)
+                    //    {
+                    //        var oDetraccion = new TRA();
+                    //        oDetraccion.FormaPago.Value = "001";
+                    //        oItem.AddTRA(oDetraccion);
+                    //        bAgregoDtr = true;
+                    //    }
 
-                    }
+                    //}
                 }
 
 
@@ -1482,6 +1676,8 @@ namespace wsFacturacionElectronica
                     oDetraccion.NumeroCuenta.Value = oDocumentoSap.CtaBancoDetraccion;
                     oDetraccion.MontoDetraccion.Value = ((double)oDocumentoSap.MontoCalculoDtr).ToString("###0.00");
                     oDetraccion.PorcentajeDetraccion.Value = ((double)oDocumentoSap.PorcDetraccion).ToString("###0.00");
+                    oDetraccion.IndicarDetraccion.Value = "Detraccion";
+                    oDetraccion.ServicioTransporte.Value = "001";
 
                     oDocumentoCarvajal.AddDetraccion(oDetraccion);
 
@@ -1490,6 +1686,7 @@ namespace wsFacturacionElectronica
                 #endregion
 
                 String sCadena = oDocumentoCarvajal.GetText();
+                sError = sCadena;
 
                 var oHashtag = oGeneradorHash.GetHashForInvoiceCdp(oDocumentoCarvajal);
                 String sRutaFile = WebConfigurationManager.AppSettings["Ruta_Salida_XML_Firmado"];
@@ -1510,9 +1707,9 @@ namespace wsFacturacionElectronica
                 if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
                     sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
                 if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaJoveme"];
                 if (oEmisor.Ruc.Equals("20602544002")) //CODESA
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCodesa"];
 
                 String sTipo = "";
                 switch (oDocumentoSap.IdTipoDoc)
@@ -1546,6 +1743,7 @@ namespace wsFacturacionElectronica
             }
             catch (Exception ex)
             {
+                //return sError + " --- " + ex.Message + "-" + ex.StackTrace + "-" + ex.GetBaseException();
                 return ex.Message + "-" + ex.StackTrace + "-" + ex.GetBaseException();
             }
         }
@@ -1612,12 +1810,12 @@ namespace wsFacturacionElectronica
                 {
                     if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1"))
                     {
-                        oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = "0.00";
+                        oDocumentoCarvajal.CAB.TotalPrecioVenta.Value = "0.00";
                     }
                     else
                     {
                         sMonto = ((double)oDocumentoSap.Total).ToString("###0.00");
-                        oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = sMonto;
+                        oDocumentoCarvajal.CAB.TotalPrecioVenta.Value = sMonto;
                     }
                 }
 
@@ -1643,6 +1841,10 @@ namespace wsFacturacionElectronica
                         sMonto = ((double)oDocumentoSap.Percepcion).ToString("###0.00");
                         oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = sMonto;
                     }
+                }
+                else
+                {
+                    oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = "0.00";
                 }
 
 
@@ -1717,83 +1919,96 @@ namespace wsFacturacionElectronica
                 //PRIMAX
                 if (oEmisor.Ruc.Equals("20554545743"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "0180050002663";
                 }
                 //COESTI
                 if (oEmisor.Ruc.Equals("20127765279"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaCoestiND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "0180050001117";
                 }
                 //PRIMAXGAS
                 if (oEmisor.Ruc.Equals("20550137489"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaPrimaxGasND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //NAVIMAX
                 if (oEmisor.Ruc.Equals("20600314409"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaNavimaxND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //JOVEME
                 if (oEmisor.Ruc.Equals("20512767011"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaJovemeND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "";
                 }
                 //CODESA
                 if (oEmisor.Ruc.Equals("20602544002"))
                 {
-                    if (oDocumentoSap.IdTipoDoc.Equals("01"))
+                    if (oDocumentoSap.IdTipoDoc.Equals("07"))
                         sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaNC"];
                     else
                     {
-                        if (oDocumentoSap.IdTipoDoc.Equals("03"))
+                        if (oDocumentoSap.IdTipoDoc.Equals("08"))
                             sPlantilla = WebConfigurationManager.AppSettings["PlantillaCodesaND"];
                     }
-                    sResolucionSunat = "0180050001319";
+                    sResolucionSunat = "1240050000515";
                 }
 
-                oDocumentoCarvajal.CAB.CodigoPlantilla.Value = sPlantilla;
+                if (!String.IsNullOrEmpty(sPlantilla))
+                {
+                    oDocumentoCarvajal.CAB.CodigoPlantilla.Value = sPlantilla;
+                }
+                
 
                 //16 - Es Baja? -- 17 - Motivo Baja
                 if (oDocumentoSap.IdEstado.Equals("2"))
                 {
                     oDocumentoCarvajal.CAB.EsBaja.Value = true;
-                    oDocumentoCarvajal.CAB.MotivoBaja.Value = "Baja";
+
+                    if (!String.IsNullOrEmpty(oDocumentoSap.Observacion.Trim()))
+                    {
+                        oDocumentoCarvajal.CAB.MotivoBaja.Value = oDocumentoSap.Observacion.Trim();
+                    }
+                    else
+                    {
+                        oDocumentoCarvajal.CAB.MotivoBaja.Value = "Baja";
+                    }
+                    
                 }
                 else
                 {
@@ -1801,11 +2016,15 @@ namespace wsFacturacionElectronica
                 }
 
                 //18 - Orden de Compra
-                oDocumentoCarvajal.CAB.OrdenCompra.Value = oDocumentoSap.OrdenCompra;
+                if (!String.IsNullOrEmpty(oDocumentoSap.OrdenCompra) && !oDocumentoSap.OrdenCompra.Equals("0"))
+                {
+                    oDocumentoCarvajal.CAB.OrdenCompra.Value = oDocumentoSap.OrdenCompra;
+                }
+                    
 
                 //20 - Fecha Vencimiento
-                //if (oDocumentoSap.FechaVencimiento != null)
-                //    oDocumentoCarvajal.CAB.FechaVencimiento.Value = (DateTime)oDocumentoSap.FechaVencimiento;
+                if (oDocumentoSap.FechaVencimiento != null)
+                    oDocumentoCarvajal.CAB.FechaVencimiento.Value = (DateTime)oDocumentoSap.FechaVencimiento;
 
                 //21 - Resolución SUNAT
                 oDocumentoCarvajal.CAB.NumeroResolucionSUNAT.Value = sResolucionSunat;
@@ -1844,9 +2063,9 @@ namespace wsFacturacionElectronica
                 oDatosEmisor.DireccionEmisor.Value = oEmisor.Direccion;
 
                 //8 - Departamento -- 9 - Provincia -- 10 - Distrito
-                oDatosEmisor.DepartamentoEmisor.Value = oEmisor.Ubigeo.Substring(0, 2);
-                oDatosEmisor.ProvinciaEmisor.Value = oEmisor.Ubigeo.Substring(2, 2);
-                oDatosEmisor.DistritoEmisor.Value = oEmisor.Ubigeo.Substring(4, 2);
+                //oDatosEmisor.DepartamentoEmisor.Value = oEmisor.Ubigeo.Substring(0, 2);
+                //oDatosEmisor.ProvinciaEmisor.Value = oEmisor.Ubigeo.Substring(2, 2);
+                //oDatosEmisor.DistritoEmisor.Value = oEmisor.Ubigeo.Substring(4, 2);
 
                 //11 - País
                 oDatosEmisor.CodigoPaisEmisor.Value = "PE";
@@ -1873,6 +2092,11 @@ namespace wsFacturacionElectronica
 
                 //6 - Dirección
                 oDatosCliente.DireccionReceptor.Value = oDocumentoSap.Cliente.Direccion;
+
+                if (!String.IsNullOrEmpty(oDocumentoSap.Cliente.CorreoElectronico))
+                {
+                    oDatosCliente.CorreoElectronicoReceptor.Value = oDocumentoSap.Cliente.CorreoElectronico;
+                }
 
                 oDocumentoCarvajal.AddReceptor(oDatosCliente);
 
@@ -1905,25 +2129,45 @@ namespace wsFacturacionElectronica
                 var oNotaDocumento = new Nota
                 {
                     Codigo = { Value = "0004" },
-                    Descripcion = { Value = @"0-800-20102 / 411-4696 / sac@pecsa.com.pe" }
+                    Descripcion = { Value = @"Central: 203-3100 / 203-3200" }
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
                 //Dirección Fiscal del Cliente
-                oNotaDocumento = new Nota
+                if (!String.IsNullOrEmpty(oDocumentoSap.Cliente.Direccion.Trim()) && !oDocumentoSap.Cliente.Direccion.Equals("0"))
                 {
-                    Codigo = { Value = "0008" },
-                    Descripcion = { Value = oDocumentoSap.Cliente.Direccion }
-                };
-                oDocumentoCarvajal.AddNota(oNotaDocumento);
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0008" },
+                        Descripcion = { Value = oDocumentoSap.Cliente.Direccion }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+
 
                 //Dirección de Entrega
-                oNotaDocumento = new Nota
+                if (!String.IsNullOrEmpty(oDocumentoSap.DireccionEntrega.Trim()) && !oDocumentoSap.DireccionEntrega.Equals("0"))
                 {
-                    Codigo = { Value = "0137" },
-                    Descripcion = { Value = oDocumentoSap.DireccionEntrega }
-                };
-                oDocumentoCarvajal.AddNota(oNotaDocumento);
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0137" },
+                        Descripcion = { Value = oDocumentoSap.DireccionEntrega }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
+                //Nro. Pedido
+                if (!String.IsNullOrEmpty(oDocumentoSap.NroPedido))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0139" },
+                        Descripcion = { Value = oDocumentoSap.NroPedido.TrimStart('0') }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
+
 
                 //Dirección de Emisión (Planta)
                 oNotaDocumento = new Nota
@@ -1953,9 +2197,20 @@ namespace wsFacturacionElectronica
                 oNotaDocumento = new Nota
                 {
                     Codigo = { Value = "0007" },
-                    Descripcion = { Value = oDocumentoSap.IdCliente }
+                    Descripcion = { Value = oDocumentoSap.IdCliente.TrimStart('0') }
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
+
+                //SCOP
+                if (!String.IsNullOrEmpty(oDocumentoSap.Scop))
+                {
+                    oNotaDocumento = new Nota
+                    {
+                        Codigo = { Value = "0001" },
+                        Descripcion = { Value = oDocumentoSap.Scop }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                }
 
                 //Monto en Letras
                 if (oDocumentoSap.Total != null)
@@ -1999,7 +2254,7 @@ namespace wsFacturacionElectronica
                     oNotaDocumento = new Nota
                     {
                         Codigo = { Value = "0055" },
-                        Descripcion = { Value = oDocumentoSap.TelefonoCsc1 }
+                        Descripcion = { Value = "CSC: " + oDocumentoSap.TelefonoCsc1 }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
@@ -2064,40 +2319,32 @@ namespace wsFacturacionElectronica
                 {
                     oNotaDocumento = new Nota
                     {
-                        Codigo = { Value = "0054" },
+                        Codigo = { Value = "0053" },
                         Descripcion = { Value = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00") }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
 
                 //Punto de Venta - Código de Destinatario
-                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
+                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta) && !oDocumentoSap.IdPuntoVenta.Equals("0"))
                 {
                     oNotaDocumento = new Nota
                     {
-                        Codigo = { Value = "0054" },
-                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta }
+                        Codigo = { Value = "0052" },
+                        Descripcion = { Value = oDocumentoSap.IdPuntoVenta.TrimStart('0') }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
 
-                //Cliente Tercero
-                if (oDocumentoSap.ReceptorTercero != null)
+                //Punto venta
+                if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
                 {
-                    if (!String.IsNullOrEmpty(oDocumentoSap.ReceptorTercero.NroDocumentoIdentidad))
+                    oNotaDocumento = new Nota
                     {
-                        //Campos OCA
-
-                        if (!String.IsNullOrEmpty(oDocumentoSap.IdPuntoVenta))
-                        {
-                            oNotaDocumento = new Nota
-                            {
-                                Codigo = { Value = "0059" },
-                                Descripcion = { Value = oDocumentoSap.ReceptorTercero.RazonSocial }
-                            };
-                            oDocumentoCarvajal.AddNota(oNotaDocumento);
-                        }
-                    }
+                        Codigo = { Value = "0059" },
+                        Descripcion = { Value = oDocumentoSap.PuntoVenta.Nombre }
+                    };
+                    oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
 
 
@@ -2160,11 +2407,25 @@ namespace wsFacturacionElectronica
                     oItem.ITE.ValorVenta.Value = sMonto;
 
                     //5 - Descripción del Producto
-                    oItem.ITE.DescripcionVenta.Value = documentoDetInfo.Articulo.Descripcion.Replace(",", "") + "~~~" +
+
+                    var sDescripcion = "";
+                    if (documentoDetInfo.Articulo.Descripcion.Length > 200)
+                    {
+                        sDescripcion = documentoDetInfo.Articulo.Descripcion.Substring(0, 200).Replace(",", "");
+                    }
+                    else
+                    {
+                        sDescripcion = documentoDetInfo.Articulo.Descripcion.Replace(",", "");
+                    }
+
+                    oItem.ITE.DescripcionVenta.Value = sDescripcion;
+
+
+                    oItem.ITE.DescripcionVenta.Value += "~~~" +
                                                         ((double)documentoDetInfo.Total).ToString("###0.00");
 
                     //6 - Valor Unitario (Precio sin impuestos)
-                    sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.00");
+                    sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
                     oItem.ITE.ValorUnitario.Value = sMonto;
 
                     //7 - Código del Producto del Emisor
@@ -2384,23 +2645,23 @@ namespace wsFacturacionElectronica
                 String sRutaDestino = "";
 
                 if (oEmisor.Ruc.Equals("20259033072"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsa"];
                 if (oEmisor.Ruc.Equals("20100132754"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
                 if (oEmisor.Ruc.Equals("20330033313"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPesNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
                 if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimax"];
                 if (oEmisor.Ruc.Equals("20127765279")) //COESTI
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
                 if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGas"];
                 if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
                 if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaJoveme"];
                 if (oEmisor.Ruc.Equals("20602544002")) //CODESA
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiNa"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCodesa"];
 
                 String sTipo = "";
                 switch (oDocumentoSap.IdTipoDoc)
@@ -2419,9 +2680,14 @@ namespace wsFacturacionElectronica
                         break;
                 }
 
-                String sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
-                                          oDocumentoSap.Serie + "_" + oDocumentoSap.NroDocumento.TrimStart('0') +
-                                          ".xml";
+                //String sArchivoGenerado = oEmisor.Ruc + "_" + sTipo + "_" +
+                //                          oDocumentoSap.Serie + "_" + oDocumentoSap.NroDocumento.TrimStart('0') +
+                //                          ".xml";
+
+                String sArchivoGenerado = oEmisor.Ruc + "-" + sTipo + "-" +
+          oDocumentoSap.Serie + "-" + oDocumentoSap.NroDocumento.PadLeft(8, '0') +
+          ".xml";
+
                 String sArchivoDestino = sArchivoGenerado.Replace('-', '_');
                 File.Copy(sRutaFile + "\\" + sArchivoGenerado, sRutaDestino + "\\" + sArchivoDestino, true);
 
@@ -2442,6 +2708,23 @@ namespace wsFacturacionElectronica
             {
                 var oEstado = new Estado().Consultar(sCompania, sIdTipoDoc, sSerie, sNroDocumento);
                 return oEstado;
+
+                
+
+                //var oRequest = new DocumentStatusByNumberRequest();
+                //oRequest.companyId = sCompania;
+                //oRequest.accountId = "ACCOUNT000";
+                //oRequest.documentType = "FA";
+                //oRequest.documentNumber = sSerie + sNroDocumento;
+
+                //var oResponse = new DocumentStatusByNumberResponse();
+
+                //var oConsulta = new InvoiceServiceImplService();
+                //oConsulta.
+
+
+                //oResponse = new InvoiceServiceImplService().DocumentStatusByNumber(oRequest);
+
             }
             catch (Exception ex)
             {
@@ -2459,12 +2742,27 @@ namespace wsFacturacionElectronica
                 var sNumeroResolucion = "";
 
 
-                if (oEmisor.Ruc.Equals("20259033072") || oEmisor.Ruc.Equals("20554545743") || oEmisor.Ruc.Equals("20127765279"))
+                //PECSA
+                if (oEmisor.Ruc.Equals("20259033072"))
                     sNumeroResolucion = "0180050001319";
+                //PDP
                 if (oEmisor.Ruc.Equals("20100132754"))
                     sNumeroResolucion = "0180050001318";
+                //PES
                 if (oEmisor.Ruc.Equals("20330033313"))
                     sNumeroResolucion = "0180050001319";
+                //PRIMAX
+                if (oEmisor.Ruc.Equals("20554545743"))
+                    sNumeroResolucion = "0180050002663";
+                //COESTI
+                if (oEmisor.Ruc.Equals("20127765279"))
+                    sNumeroResolucion = "0180050001117";
+                //CODESA
+                if (oEmisor.Ruc.Equals("20602544002"))
+                    sNumeroResolucion = "1240050000515";
+                //PRIMAXGAS - NAVIMAX - JOVEME
+                if (oEmisor.Ruc.Equals("20550137489") || oEmisor.Ruc.Equals("20600314409") || oEmisor.Ruc.Equals("20512767011"))
+                    sNumeroResolucion = "";
 
                 var sNumeroLetras = "";
                 if (oDocumentoRetencion.MontoTotalRetenido != null)
@@ -2673,23 +2971,23 @@ namespace wsFacturacionElectronica
                 String sRutaDestino = "";
 
                 if (oEmisor.Ruc.Equals("20259033072"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsa"];
                 if (oEmisor.Ruc.Equals("20100132754"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
                 if (oEmisor.Ruc.Equals("20330033313"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPesRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
                 if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimax"];
                 if (oEmisor.Ruc.Equals("20127765279")) //COESTI
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
                 if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGas"];
                 if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
                 if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaJoveme"];
                 if (oEmisor.Ruc.Equals("20602544002")) //CODESA
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiRet"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCodesa"];
 
                 const String sTipo = "20";
 
@@ -2754,9 +3052,9 @@ namespace wsFacturacionElectronica
                     if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
                         sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
                     if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
-                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaJoveme"];
                     if (oEmisor.Ruc.Equals("20602544002")) //CODESA
-                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
+                        sRutaDestino = WebConfigurationManager.AppSettings["RutaCodesa"];
 
                     oGeneradorCancel.GenerateXml(sRutaDestino);
                 }
@@ -2780,13 +3078,27 @@ namespace wsFacturacionElectronica
                 var sNumeroResolucion = "";
                 var sMonto = "";
 
-
-                if (oEmisor.Ruc.Equals("20259033072") || oEmisor.Ruc.Equals("20554545743") || oEmisor.Ruc.Equals("20127765279"))
+                //PECSA
+                if (oEmisor.Ruc.Equals("20259033072"))
                     sNumeroResolucion = "0180050001319";
+                //PDP
                 if (oEmisor.Ruc.Equals("20100132754"))
                     sNumeroResolucion = "0180050001318";
+                //PES
                 if (oEmisor.Ruc.Equals("20330033313"))
                     sNumeroResolucion = "0180050001319";
+                //PRIMAX
+                if (oEmisor.Ruc.Equals("20554545743"))
+                    sNumeroResolucion = "0180050002663";
+                //COESTI
+                if (oEmisor.Ruc.Equals("20127765279"))
+                    sNumeroResolucion = "0180050001117";
+                //CODESA
+                if (oEmisor.Ruc.Equals("20602544002"))
+                    sNumeroResolucion = "1240050000515";
+                //PRIMAXGAS - NAVIMAX - JOVEME
+                if (oEmisor.Ruc.Equals("20550137489") || oEmisor.Ruc.Equals("20600314409") || oEmisor.Ruc.Equals("20512767011"))
+                    sNumeroResolucion = "";
 
                 var sNumeroLetras = "";
                 if (oPercepcion.ImporteTotalPercibido != null)
@@ -2820,6 +3132,7 @@ namespace wsFacturacionElectronica
 
                 oEncabezado.CodigoNota.Value = "P040";
                 oEncabezado.ImporteTotalEnLetras.Value = sNumeroLetras;
+                oEncabezado.CorreoElectronico.Value = oPercepcion.Cliente.CorreoElectronico;
                 //oEncabezado.HoraEmision.Value = DateTime.Now.ToString("hh:mm:ss");
 
                 oPercepcionCarvajal.Encabezado = oEncabezado;
@@ -3010,23 +3323,23 @@ namespace wsFacturacionElectronica
                 String sRutaDestino = "";
 
                 if (oEmisor.Ruc.Equals("20259033072"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsaPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPecsa"];
                 if (oEmisor.Ruc.Equals("20100132754"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdpPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPdp"];
                 if (oEmisor.Ruc.Equals("20330033313"))
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPesPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPes"];
                 if (oEmisor.Ruc.Equals("20554545743")) //PRIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimax"];
                 if (oEmisor.Ruc.Equals("20127765279")) //COESTI
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoesti"];
                 if (oEmisor.Ruc.Equals("20550137489")) //PrimaxGas
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGasPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaPrimaxGas"];
                 if (oEmisor.Ruc.Equals("20600314409")) //NAVIMAX
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimaxPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaNavimax"];
                 if (oEmisor.Ruc.Equals("20512767011")) //JOVEME
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaJoveme"];
                 if (oEmisor.Ruc.Equals("20602544002")) //CODESA
-                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCoestiPer"];
+                    sRutaDestino = WebConfigurationManager.AppSettings["RutaCodesa"];
 
                 const String sTipo = "40";
 

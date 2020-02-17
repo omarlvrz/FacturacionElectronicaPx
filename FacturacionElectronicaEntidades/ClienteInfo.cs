@@ -13,6 +13,7 @@ namespace FacturacionElectronicaEntidades
         private String _idDepartamento;
         private String _idProvincia;
         private String _idDistrito;
+        private String _correoElectronico;
 
         /// <summary>
         /// Constructor de la Entidad ClienteInfo
@@ -116,5 +117,7 @@ namespace FacturacionElectronicaEntidades
             get { return _idDistrito; }
             set { _idDistrito = value; }
         }
+
+        public string CorreoElectronico { get => _correoElectronico; set => _correoElectronico = value; }
     }
 }
