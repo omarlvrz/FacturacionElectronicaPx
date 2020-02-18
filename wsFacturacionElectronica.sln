@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wsFacturacionElectronica", "wsFacturacionElectronica\wsFacturacionElectronica.csproj", "{1F1F0D89-9CB9-46F6-86DE-CB35C81A42D3}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaAccesoDatos", "FacturacionElectronicaAccesoDatos\FacturacionElectronicaAccesoDatos.csproj", "{70FFEF6D-0414-49B7-9B29-D736D582F814}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturacionElectronicaLogicaNegocio", "FacturacionElectronicaLogicaNegocio\FacturacionElectronicaLogicaNegocio.csproj", "{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wsConsultaFepe", "wsConsultaFepe\wsConsultaFepe.csproj", "{64F0D2CA-9A5F-4227-8DA5-450AC07F3955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF4EE4C-E878-487D-8CC5-2D504F7BE142}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64F0D2CA-9A5F-4227-8DA5-450AC07F3955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F0D2CA-9A5F-4227-8DA5-450AC07F3955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F0D2CA-9A5F-4227-8DA5-450AC07F3955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F0D2CA-9A5F-4227-8DA5-450AC07F3955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
