@@ -43,14 +43,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Carvajal.FEPE.PreSC, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\Carvajal.FEPE.PreSC.dll</HintPath>
+    <Reference Include="Carvajal.FEPE.PreSC">
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\Carvajal.FEPE.PreSC.dll</HintPath>
+    </Reference>
+    <Reference Include="Gma.QrCodeNet.Encoding">
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\Gma.QrCodeNet.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vsa, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\Librerías Carvajal\UBL 2.1\20190712\Carvajal.FEPE.PreSC\Microsoft.Vsa.dll</HintPath>
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\Microsoft.Vsa.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -68,13 +73,11 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="UBL20, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL20.dll</HintPath>
+    <Reference Include="UBL20">
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\UBL20.dll</HintPath>
     </Reference>
-    <Reference Include="UBL21, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OneDrive - Corporativo\PECSA\FEPE\DANAUS\DLL\20191209\Pre_SC_V3.7.0.6_04122019\Carvajal.FEPE.PreSC\UBL21.dll</HintPath>
+    <Reference Include="UBL21">
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\UBL21.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
