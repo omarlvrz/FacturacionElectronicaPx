@@ -448,6 +448,10 @@ namespace wsFacturacionElectronica
                 {
                     oDatosCliente.NombreReceptor.Value = "PROGRAMA NACIONAL DE APOYO DIRECTO A LOS MAS POBRES \"JUNTOS\" ";
                 }
+                if (oDocumentoSap.Cliente.NroDocumentoIdentidad.Equals("20257364357"))
+                {
+                    oDatosCliente.NombreReceptor.Value = "MOLINOS & CÍA. S.A.";
+                }
 
 
                 //6 - Dirección
@@ -1159,18 +1163,32 @@ namespace wsFacturacionElectronica
                             }
                         }
                     }
+                    oDocumentoCarvajal.AddImpuesto(oImpuesto);
 
+                    //Para bonificaciones gratuitas
+                    if (oDocumentoSap.MontoGratuito > 0.00)
+                    {
+                        var oImpuestoGrat = new IMP();
+                        oImpuestoGrat.ImporteTotal.Value = "0.00";
+                        oImpuestoGrat.ImporteExplicito.Value = "0.00";
+
+                        oImpuestoGrat.TotalVenta.Value = ((double)oDocumentoSap.MontoGratuito).ToString("###0.00");
+                        oImpuestoGrat.CatalogoSunat.Value = "9996";
+                        oImpuestoGrat.NombreTributo.Value = "GRA";
+                        oImpuestoGrat.CodigoTipoTributo.Value = "FRE";
+
+                        oDocumentoCarvajal.AddImpuesto(oImpuestoGrat);
+
+                    }
                 }
                 else
                 {
                     oImpuesto.CatalogoSunat.Value = "9996";
                     oImpuesto.NombreTributo.Value = "GRA";
                     oImpuesto.CodigoTipoTributo.Value = "FRE";
+
+                    oDocumentoCarvajal.AddImpuesto(oImpuesto);
                 }
-
-
-
-                oDocumentoCarvajal.AddImpuesto(oImpuesto);
 
                 //ISC
                 if (oDocumentoSap.Isc > 0)
@@ -1394,7 +1412,16 @@ namespace wsFacturacionElectronica
                         oItem.ITE.TipoEstructuraGTIN.Value = documentoDetInfo.Articulo.CodigoGtin;
 
                     //11 - Código de Precio
-                    oItem.ITE.CodigoPrecio.Value = !oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "01" : "02";
+
+                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1") || documentoDetInfo.MontoGratuito > 0.00)
+                    {
+                        oItem.ITE.CodigoPrecio.Value = "02";
+                    }
+                    else
+                    {
+                        oItem.ITE.CodigoPrecio.Value = "01";
+                    }
+                        //!oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "01" : "02";
 
                     //6 - Valor Precio (Precio con impuestos)
                     if (oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
@@ -1493,10 +1520,10 @@ namespace wsFacturacionElectronica
 
                     var oItemImpuesto = new IIM();
 
-                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1"))
+                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1")|| documentoDetInfo.MontoGratuito > 0.00)
                     {
                         //5 - Tipo de Afectación IGV
-                        oItemImpuesto.TipoAfectacionIGV.Value = "21";
+                        oItemImpuesto.TipoAfectacionIGV.Value = "31";
                         sMonto = "0.00";
                     }
                     else
@@ -1532,6 +1559,13 @@ namespace wsFacturacionElectronica
 
                     //2 - Base Imponible sobre la que se aplica la tasa
                     sMonto = ((double)documentoDetInfo.SubTotal).ToString("###0.00");
+
+                    if (documentoDetInfo.MontoGratuito > 0.00)
+                    {
+                        sMonto = ((double)documentoDetInfo.MontoGratuito).ToString("###0.00");
+                    }
+
+
                     oItemImpuesto.BaseImponible.Value = sMonto;
 
                     //4 - Porcentaje que se aplica a la base imponible
@@ -1546,13 +1580,13 @@ namespace wsFacturacionElectronica
 
                     //9 - Código del tipo de Tributo
 
-                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1"))
+                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1") || documentoDetInfo.MontoGratuito > 0.00)
                     {
                         //Transferencia Gratuita
                         //5 - Tipo de Afectación IGV
                         oItemImpuesto.CategoriaTributoSUNAT.Value = "9996";
                         oItemImpuesto.NombreTributo.Value = "GRA";
-                        oItemImpuesto.TipoAfectacionIGV.Value = "32";
+                        //oItemImpuesto.TipoAfectacionIGV.Value = "32";
                         oItemImpuesto.CodigoTipoTributo.Value = "FRE";
                     }
                     else
@@ -1590,6 +1624,8 @@ namespace wsFacturacionElectronica
                     oItemImpuesto.SistemaISC.Value = "";
 
                     oItem.AddIIM(oItemImpuesto);
+
+
 
                     //ISC
                     if (documentoDetInfo.Isc > 0)
@@ -3568,8 +3604,8 @@ namespace wsFacturacionElectronica
                     #region Comprobante Relacionado
 
                     var oDocumentoRelacionado = new DatosComprobanteRelacionado(1, ",");
-                    oDocumentoRelacionado.TipoDocumento.Value = 
-                        detallePercepcionInfo.ComprobanteRelacionado.IdTipoDocumento.Equals("01") ?  
+                    oDocumentoRelacionado.TipoDocumento.Value =
+                        detallePercepcionInfo.ComprobanteRelacionado.IdTipoDocumento.Equals("01") ?
                             FEPE_Document_Enums.Tipo_Documento.Factura_01 : FEPE_Document_Enums.Tipo_Documento.Boleta_Venta_03;
 
                     oDocumentoRelacionado.NumeroDocumento.Value =
