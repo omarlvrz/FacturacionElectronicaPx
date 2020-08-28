@@ -15,6 +15,7 @@ namespace FacturacionElectronicaEntidades
         private String _idDistrito;
         private String _ubigeo;
         private String _flagFepe;
+        private String _idCodigoSunat;
 
         /// <summary>
         /// Contructor de la Entidad PlantaInfo
@@ -143,5 +144,7 @@ namespace FacturacionElectronicaEntidades
             get { return _flagFepe; }
             set { _flagFepe = value; }
         }
+
+        public string IdCodigoSunat { get => _idCodigoSunat; set => _idCodigoSunat = value; }
     }
 }

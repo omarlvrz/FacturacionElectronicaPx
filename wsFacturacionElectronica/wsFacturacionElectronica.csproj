@@ -43,8 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Carvajal.FEPE.PreSC">
-      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\Carvajal.FEPE.PreSC.dll</HintPath>
+    <Reference Include="Carvajal.FEPE.PreSC, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200706\Carvajal.FEPE.PreSC\Carvajal.FEPE.PreSC.dll</HintPath>
     </Reference>
     <Reference Include="Gma.QrCodeNet.Encoding">
       <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\Gma.QrCodeNet.Encoding.dll</HintPath>
@@ -73,11 +74,13 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="UBL20">
-      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\UBL20.dll</HintPath>
+    <Reference Include="UBL20, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200706\Carvajal.FEPE.PreSC\UBL20.dll</HintPath>
     </Reference>
-    <Reference Include="UBL21">
-      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200306\UBL21.dll</HintPath>
+    <Reference Include="UBL21, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Users\OALVAREZ\OneDrive - Corporativo\PRIMAX\FEPE\DANAUS\DLL\20200706\Carvajal.FEPE.PreSC\UBL21.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

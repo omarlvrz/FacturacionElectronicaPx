@@ -114,7 +114,7 @@ namespace wsFacturacionElectronica
                     }
                     else
                     {
-                        sMonto = ((double)oDocumentoSap.Total).ToString("###0.00");
+                        sMonto = ((double)(oDocumentoSap.Total - oDocumentoSap.MontoFise)).ToString("###0.00");
                         oDocumentoCarvajal.CAB.TotalPrecioVenta.Value = sMonto;
                     }
                 }
@@ -146,7 +146,17 @@ namespace wsFacturacionElectronica
                 //{
                 //    oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = "0.00";
                 //}
-                oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = "0.00";
+                if (oDocumentoSap.MontoFise > 0)
+                {
+                    sMonto = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00");
+
+                }
+                else
+                {
+                    sMonto = "0.00";
+                }
+                oDocumentoCarvajal.CAB.ImporteTotalCargos.Value = sMonto;
+
 
                 //13 - Monto Redondeo Importe Total
                 //if (oDocumentoSap.Total != null)
@@ -552,6 +562,19 @@ namespace wsFacturacionElectronica
                 };
                 oDocumentoCarvajal.AddNota(oNotaDocumento);
 
+                //Código SUNAT local anexo
+                if (!String.IsNullOrEmpty(oDocumentoSap.Planta.IdCodigoSunat))
+                {
+                    if (!oDocumentoSap.Planta.IdCodigoSunat.Equals("0"))
+                    {
+                        var oCodigoSunatLocal = new DEL();
+                        oCodigoSunatLocal.CodigoSUNAT.Value = oDocumentoSap.Planta.IdCodigoSunat;
+                        oDocumentoCarvajal.AddDireccionEntrega(oCodigoSunatLocal);
+                    }
+
+                }
+
+
                 //Web de PECSA
                 oNotaDocumento = new Nota
                 {
@@ -671,15 +694,38 @@ namespace wsFacturacionElectronica
                 }
 
                 //Instrucción Entrega
-                if (!String.IsNullOrEmpty(oDocumentoSap.InstruccionEntrega))
+                //if (!String.IsNullOrEmpty(oDocumentoSap.InstruccionEntrega))
+                //{
+                //    oNotaDocumento = new Nota
+                //    {
+                //        Codigo = { Value = "0050" },
+                //        Descripcion = { Value = oDocumentoSap.InstruccionEntrega }
+                //    };
+                //    oDocumentoCarvajal.AddNota(oNotaDocumento);
+                //}
+                if (!String.IsNullOrEmpty(oDocumentoSap.InstruccionEntrega) && !oDocumentoSap.InstruccionEntrega.Equals("0"))
                 {
+
+                    var sGlosa = "";
+                    if (oDocumentoSap.InstruccionEntrega.Length > 100)
+                    {
+                        sGlosa = oDocumentoSap.InstruccionEntrega.Substring(0, 100);
+                    }
+                    else
+                    {
+                        sGlosa = oDocumentoSap.InstruccionEntrega;
+                    }
+
                     oNotaDocumento = new Nota
                     {
                         Codigo = { Value = "0050" },
-                        Descripcion = { Value = oDocumentoSap.InstruccionEntrega }
+                        Descripcion = { Value = sGlosa }
                     };
                     oDocumentoCarvajal.AddNota(oNotaDocumento);
                 }
+
+
+
 
                 //Código de Pago
                 if (!String.IsNullOrEmpty(oDocumentoSap.CodigoPago))
@@ -1084,7 +1130,7 @@ namespace wsFacturacionElectronica
                         }
                         else
                         {
-                            sGuia = oDocumentoSap.SerieGuiaRemision.PadLeft(4, '0') + "-" + oDocumentoSap.NroGuiaRemision;
+                            sGuia = oDocumentoSap.SerieGuiaRemision.TrimStart('0') + "-" + oDocumentoSap.NroGuiaRemision;
                         }
 
                         //1 - Número de la Guía
@@ -1121,10 +1167,32 @@ namespace wsFacturacionElectronica
                 #region IMP-Impuestos
 
                 //IGV
-                sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1")
-                             ? "0.00"
-                             : ((double)oDocumentoSap.Igv).ToString("###0.00");
+                //sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1")
+                //             ? "0.00"
+                //             : ((double)(oDocumentoSap.Igv+oDocumentoSap.MontoFise)).ToString("###0.00");
+
                 var oImpuesto = new IMP();
+
+                if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1"))
+                {
+                    sMonto = "0.00";
+                }
+                else
+                {
+                    //if (oDocumentoSap.MontoFise > 0)
+                    //{
+                    //    sMonto = ((double)(oDocumentoSap.Igv + oDocumentoSap.MontoFise)).ToString("###0.00");
+                    //    oImpuesto.ImporteTotal.Value = sMonto;
+
+                    //    sMonto = ((double)(oDocumentoSap.Igv)).ToString("###0.00");
+
+                    //    oImpuesto.ImporteExplicito.Value = sMonto;
+                    //}
+                    //else {
+                    sMonto = ((double)(oDocumentoSap.Igv)).ToString("###0.00");
+
+                    //}
+                }
                 oImpuesto.ImporteTotal.Value = sMonto;
                 oImpuesto.ImporteExplicito.Value = sMonto;
 
@@ -1209,24 +1277,32 @@ namespace wsFacturacionElectronica
 
                 }
 
-                //FISE
-                //if (oDocumentoSap.MontoFise > 0)
-                //{
-                //    sMonto = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00");
-                //    oImpuesto = new IMP();
-                //    oImpuesto.ImporteTotal.Value = sMonto;
-                //    oImpuesto.ImporteExplicito.Value = sMonto;
-                //    oImpuesto.TotalVenta.Value = oDocumentoCarvajal.CAB.TotalValorVenta.Value;
-                //    oImpuesto.CatalogoSunat.Value = "9999";
-                //    oImpuesto.NombreTributo.Value = "OTR";
-                //    oImpuesto.CodigoTipoTributo.Value = "OTH";
 
-                //    oDocumentoCarvajal.AddImpuesto(oImpuesto);
-                //}
 
                 #endregion
 
                 #region CYD - Cargos y Descuentos
+                //FISE
+                if (oDocumentoSap.MontoFise > 0)
+                {
+
+                    var oFise = new CYD();
+                    oFise.EsCargoDescuento.Value = "true";
+                    oFise.CodigoMotivo.Value = "45";
+                    oFise.FactorCargo.Value = "0.00";
+
+                    sMonto = ((double)(oDocumentoSap.MontoFise)).ToString("###0.00");
+                    oFise.Monto.Value = sMonto;
+                    oFise.TipoMoneda.Value = oDocumentoSap.IdMoneda;
+
+                    sMonto = ((double)(oDocumentoSap.Subtotal)).ToString("###0.00");
+                    oFise.MontoBase.Value = sMonto;
+                    oFise.TipoMonedaMontoBase.Value = oDocumentoSap.IdMoneda;
+
+                    oDocumentoCarvajal.AddCargoDescuento(oFise);
+                }
+
+
                 //Descuentos
                 //if (oDocumentoSap.Descuento > 0 && oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
                 //{
@@ -1334,12 +1410,21 @@ namespace wsFacturacionElectronica
                     oItem.ITE.UnidadMedida.Value = documentoDetInfo.Articulo.UnidadMedida;
 
                     //3 - Cantidad
-                    sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.000");
+                    if (oEmisor.Ruc.Equals("20127765279") || oEmisor.Ruc.Equals("20512767011")
+                        || oEmisor.Ruc.Equals("20602544002") || oEmisor.Ruc.Equals("20100132754"))
+                    {
+                        sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.000");
+                    }
+                    else
+                    {
+                        sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.00");
+                    }
+
                     oItem.ITE.CantidadUnidad.Value = sMonto;
 
                     //4 - Valor Venta
-                    //sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? ((double)(documentoDetInfo.MontoGratuito)).ToString("###0.00") : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
-                    sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "0.00" : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
+                    sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? ((double)(documentoDetInfo.MontoGratuito)).ToString("###0.00") : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
+                    //sMonto = oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "0.00" : ((double)(documentoDetInfo.SubTotal)).ToString("###0.00");
                     oItem.ITE.ValorVenta.Value = sMonto;
 
                     //5 - Descripción del Producto
@@ -1391,9 +1476,11 @@ namespace wsFacturacionElectronica
                         //    sMonto = "0.00";
                         //    //sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
                         //}
+
                         sMonto = "0.00";
                     }
 
+                    //sMonto = ((double)documentoDetInfo.PrecioUnitario).ToString("###0.0000");
                     oItem.ITE.ValorUnitario.Value = sMonto;
 
                     //7 - Código del Producto del Emisor
@@ -1421,7 +1508,7 @@ namespace wsFacturacionElectronica
                     {
                         oItem.ITE.CodigoPrecio.Value = "01";
                     }
-                        //!oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "01" : "02";
+                    //!oDocumentoSap.MotivoVenta.Gratuito.Equals("1") ? "01" : "02";
 
                     //6 - Valor Precio (Precio con impuestos)
                     if (oDocumentoSap.MotivoVenta.Gratuito.Equals("0"))
@@ -1520,7 +1607,7 @@ namespace wsFacturacionElectronica
 
                     var oItemImpuesto = new IIM();
 
-                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1")|| documentoDetInfo.MontoGratuito > 0.00)
+                    if (oDocumentoSap.MotivoVenta.Gratuito.Equals("1") || documentoDetInfo.MontoGratuito > 0.00)
                     {
                         //5 - Tipo de Afectación IGV
                         oItemImpuesto.TipoAfectacionIGV.Value = "31";
@@ -1564,8 +1651,6 @@ namespace wsFacturacionElectronica
                     {
                         sMonto = ((double)documentoDetInfo.MontoGratuito).ToString("###0.00");
                     }
-
-
                     oItemImpuesto.BaseImponible.Value = sMonto;
 
                     //4 - Porcentaje que se aplica a la base imponible
@@ -2714,7 +2799,18 @@ namespace wsFacturacionElectronica
                     oItem.ITE.UnidadMedida.Value = documentoDetInfo.Articulo.UnidadMedida;
 
                     //3 - Cantidad
-                    sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.00");
+                    //3 Decimales para negocio minorista
+                    if (oEmisor.Ruc.Equals("20127765279") || oEmisor.Ruc.Equals("20512767011")
+                        || oEmisor.Ruc.Equals("20602544002") || oEmisor.Ruc.Equals("20100132754"))
+                    {
+                        sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.000");
+                    }
+                    else
+                    {
+                        sMonto = ((double)documentoDetInfo.Cantidad).ToString("###0.00");
+                    }
+
+
                     oItem.ITE.CantidadUnidad.Value = sMonto;
 
                     //4 - Valor Venta
