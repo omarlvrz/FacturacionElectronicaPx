@@ -364,6 +364,13 @@ namespace wsFacturacionElectronica
                                 {
                                     sLetras += "MIL ";
                                 }
+                                else
+                                {
+                                    if (sEntero.Substring(y, 1).Equals("0") && sEntero.Length == 6)
+                                    {
+                                        sLetras += "MIL ";
+                                    }
+                                }
                             }
                         }
                     }
